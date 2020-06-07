@@ -79,12 +79,12 @@ class Genome{
     }
     
     float rand2 = random(1);
-    if(rand2 < 0.12){
+    if(rand2 < 0.25){
       addConnection(connectionHistory);
     }
     
     float rand3 = random(1);
-    if(rand3 < 0.08){
+    if(rand3 < 0.15){
       addNode(connectionHistory);
     }
   }
@@ -110,7 +110,7 @@ class Genome{
     }
     
     int currentInnovationNo = connectionHistory.getInnovationNo(nodes.get(random1).number, nodes.get(random2).number);
-    connections.add(new ConnectionGene(nodes.get(random1), nodes.get(random2), random(-1,1), currentInnovationNo)); //<>//
+    connections.add(new ConnectionGene(nodes.get(random1), nodes.get(random2), random(-1,1), currentInnovationNo));
     
     connect();
     
@@ -127,7 +127,7 @@ class Genome{
     //for(int i=0;i<connections.size();++i){
     //    println(connections.get(i).from.number+" - "+connections.get(i).to.number+" :: "+connections.get(i).innovationNo);
     //}
-    //println(""); //<>//
+    //println("");
   }
   
   void addNode(ConnectionHistory connectionHistory){
@@ -142,15 +142,15 @@ class Genome{
     ++nextNode;
   
     int currentInnovationNo = connectionHistory.getInnovationNo(connections.get(randomConnection).from.number, getNode(curr).number);
-    connections.add(new ConnectionGene(connections.get(randomConnection).from, getNode(curr), 1, currentInnovationNo)); //<>//
+    connections.add(new ConnectionGene(connections.get(randomConnection).from, getNode(curr), 1, currentInnovationNo));
     
     currentInnovationNo = connectionHistory.getInnovationNo(getNode(curr).number, connections.get(randomConnection).to.number);
-    connections.add(new ConnectionGene(getNode(curr), connections.get(randomConnection).to, connections.get(randomConnection).weight,currentInnovationNo)); //<>// //<>//
+    connections.add(new ConnectionGene(getNode(curr), connections.get(randomConnection).to, connections.get(randomConnection).weight,currentInnovationNo));
     
     getNode(curr).layer = connections.get(randomConnection).from.layer + 1;
     
     currentInnovationNo = connectionHistory.getInnovationNo(nodes.get(biasNode).number, getNode(curr).number);
-    connections.add(new ConnectionGene(nodes.get(biasNode), getNode(curr), 0, currentInnovationNo)); //<>//
+    connections.add(new ConnectionGene(nodes.get(biasNode), getNode(curr), 0, currentInnovationNo));
     
     if(getNode(curr).layer == connections.get(randomConnection).to.layer){
       for(int i=0;i<nodes.size()-1;++i){

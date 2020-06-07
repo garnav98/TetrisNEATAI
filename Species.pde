@@ -7,12 +7,16 @@ class Species{
   float excessCoeff = 1.5;
   float disjointCoeff = 1.5;
   float weightDiffCoeff = 0.8;
-  float compatibilityThreshold = 1;
+  float compatibilityThreshold = 0.6;
   
   Species(Player p){
     players.add(p);
     bestFitness = p.fitness;
     parameterGenome = p.brain.clone();
+  }
+  
+  void addToSpecies(Player p){
+    players.add(p);
   }
   
   boolean sameSpecies(Genome p, ConnectionHistory connectionHistory){
@@ -27,9 +31,6 @@ class Species{
     }
     
     compatibility = (excessCoeff*excess/N) + (disjointCoeff*disjoint/N) + (weightDiffCoeff*averageWeightDifference);
-    //if(disjoint < 0){
-    //  println(disjoint+" "+excess+" "+parameterGenome.connections.size()+" "+p.connections.size());
-    //}
     //println("compatibility: "+compatibility+" excess: "+excess+" disjoint: "+disjoint+" averageWeightDifference: "+averageWeightDifference);
     return (compatibility < compatibilityThreshold);
   }
@@ -80,12 +81,14 @@ class Species{
       for(int j=0;j<y.connections.size();++j){
         if(x.connections.get(i).innovationNo == y.connections.get(j).innovationNo){
           ++matching; 
+          break;
         }
       }
     }
+    
     float curr = x.connections.size() + y.connections.size() - (2*matching) - findExcess(x,y);
     if(curr < 0){
-      println(x.connections.size()+" "+y.connections.size()+" "+matching+" ankjbjbjasjkhdfhjsfhjksb ");
+      println(x.connections.size()+" "+y.connections.size()+" "+matching+" disjoint < 0");
       exit();
     }
     return (x.connections.size() + y.connections.size() - (2*matching));
@@ -123,14 +126,13 @@ class Species{
           maxIndex = j;
         }
       }
-      //println(maxIndex);
       tmp.add(players.get(maxIndex));
       players.remove(maxIndex);
       --i;
     }
     players = (ArrayList)tmp.clone();
     
-    if(players.get(0).fitness > bestFitness) {
+    if(players.get(0).fitness > bestFitness) {     
       stale = 0;
       bestFitness = players.get(0).fitness;
       parameterGenome = players.get(0).brain.clone();

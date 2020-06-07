@@ -1,7 +1,7 @@
 final int SIZE = 30; 
 final int H = 600;
 final int W = 300;
-final int input_nodes = 31;
+final int input_nodes = 32;
 final int output_nodes = 6;
 int globalInnovationNo = 1000000;
 int generation=1;
@@ -55,7 +55,7 @@ void setup(){
   tetro[6] += "--X-";
   tetro[6] += "----";
   
-  frameRate(50);
+  frameRate(150);
   player = new Player();
   pop = new Population(300);
 }

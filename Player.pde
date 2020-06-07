@@ -265,18 +265,21 @@ class Player{
   }
   
   void calculateFitness(){
+    float[] holes = field.calcHoles();
+    float totalHoles = 0;
+    for(int i=0;i<holes.length;++i){
+      totalHoles += holes[i];
+    }
+    
     if(totalLinesRemoved < 10){
-      fitness = pow(2,totalLinesRemoved) * score * noOfMoves;
-      if(tetrisFormed > 0){
-        fitness *= (tetrisFormed*tetrisFormed);
-      }
+      fitness = pow(2,totalLinesRemoved) * score * noOfMoves * (1.0/(totalHoles*totalHoles));
     }
     else{
-      fitness = pow(2,10) * score * noOfMoves;
+      fitness = pow(2,10) * score * noOfMoves * (1.0/(totalHoles*totalHoles));
       fitness *= (totalLinesRemoved - 9);
-      if(tetrisFormed > 0){
-        fitness *= (tetrisFormed*tetrisFormed);
-      }
+    }
+    if(tetrisFormed > 0){
+      fitness *= (tetrisFormed*tetrisFormed);
     }
   }
   
@@ -306,10 +309,8 @@ class Player{
   }
   
   float[] lookInDirection(){
-    float[] visionInDirection = new float[31];
-    
-    //float[] tmpArray = new float[3];
-    
+    float[] visionInDirection = new float[32];
+   
     for(int i=0;i<10;++i){
       visionInDirection[i] = 0;
     }
@@ -330,42 +331,33 @@ class Player{
     
     visionInDirection[19] = max(maxHeight, visionInDirection[9]);
     
+    float[] holes = field.calcHoles();
     float totalHoles = 0;
-    for(int j=0;j<field.cols;j+=SIZE){
-      float holesInColumn = 0;
-      for(int i=4*SIZE;i<field.rows;i+=SIZE){
-        if(field.map[i][j] != 0){
-          for(int k=i;k<field.rows;k+=SIZE){
-             if(field.map[i][j] == 0){
-               ++holesInColumn;
-             }
-          }
-        }
-      }
-      visionInDirection[(j/SIZE)+20] = holesInColumn;
-      totalHoles += holesInColumn;
+    for(int i=0;i<10;++i){
+      visionInDirection[20+i] = holes[i];
+      totalHoles += holes[i];
     }
-    
     visionInDirection[30] = totalHoles;
     
-    for(int i=0;i<10;++i){              //normalizing values.
-      visionInDirection[i] /= 20.0;
+    float totalHeight = 0;
+    for(int i=0;i<10;++i){
+      totalHeight += visionInDirection[i];
     }
-    for(int i=10;i<19;++i){
-      visionInDirection[i] /= 20.0;      //as taking the absolute difference, hence need only divide by 20.
-      //visionInDirection[i] += 1;
-      //visionInDirection[i] /= 2.0;
-    }
-    visionInDirection[19] /= 20.0;
-    for(int i=20;i<30;++i){
-      visionInDirection[i] /= 19.0;
-    }
-    visionInDirection[30] /= 171.0;      //max no of holes could be 171.
+    visionInDirection[31] = totalHeight;
     
-    //tmpArray[0] = visionInDirection[0];
-    //tmpArray[1] = visionInDirection[1];
-    //tmpArray[2] = visionInDirection[2];
-    //return tmpArray;
+    //for(int i=0;i<10;++i){              //normalizing values.
+    //  visionInDirection[i] /= 20.0;
+    //}
+    //for(int i=10;i<19;++i){
+    //  visionInDirection[i] /= 20.0;      //as taking the absolute difference, hence need only divide by 20.
+    //}
+    //visionInDirection[19] /= 20.0;
+    //for(int i=20;i<30;++i){
+    //  visionInDirection[i] /= 19.0;
+    //}
+    //visionInDirection[30] /= 171.0;      //max no of holes could be 171.
+    //visionInDirection[31] /= 100.0;
+
     return visionInDirection;
   }
   

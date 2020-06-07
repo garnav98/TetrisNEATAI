@@ -58,7 +58,6 @@ class Population{
   }
   
   void naturalSelection(){
-    //pop.get(1).brain.connect();
     speciate();
     calculateFitness();
     sortSpecies();
@@ -89,10 +88,6 @@ class Population{
       nextGen.add(species.get(0).giveBaby(connectionHistory,gen));
     }
     
-    //gap();
-    //pop.get(1).playerVal(1,gen);
-    
-    //pop.get(1).brain.connect();
     pop.clear();
     pop = (ArrayList)nextGen.clone();
    
@@ -100,16 +95,7 @@ class Population{
       pop.get(i).brain.generateNetwork();
     }
     
-    //gap();
-    //gap();
-    //gap();
-    //pop.get(0).playerVal(0,gen);
-    //gap();
-    //pop.get(1).playerVal(1,gen);
-    //gap();
-    //gap();
-    //gap();
-    println("generation", gen, "species: " + species.size()); //<>//
+    printInfo();
     ++gen;
     generation = gen;
   }
@@ -122,15 +108,21 @@ class Population{
     for(int i=0;i<pop.size();++i){
       boolean foundSpecies = false;
       for(int j=0;j<species.size();++j){
-        //println("player: "+i+" gen: "+gen);
         if(species.get(j).sameSpecies(pop.get(i).brain, connectionHistory)){
-          species.get(j).players.add(pop.get(i));
+          species.get(j).addToSpecies(pop.get(i));
           foundSpecies = true;
           break;
         }
       }
       if(foundSpecies == false){
         species.add(new Species(pop.get(i)));
+      }
+    }
+    
+    for(int i=0;i<species.size();++i){
+      if(species.get(i).players.size() == 0){
+        species.remove(i);
+        --i;
       }
     }
   }
@@ -202,6 +194,17 @@ class Population{
       sum += species.get(i).speciesAverage();
     }
     return sum;
+  }
+  
+  void printInfo(){
+    println("Gen: "+gen);
+    println("Species: "+species.size());
+    print("Size of species: ");
+    for(int i=0;i<species.size();++i){
+      print(species.get(i).players.size()+" ");
+    }
+    println(" ");
+    
   }
   
   void gap(){

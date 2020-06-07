@@ -18,7 +18,7 @@ class ConnectionGene{
       weight = random(-1,1);
     }
     else{
-      weight += randomGaussian()/5;
+      weight += randomGaussian()/20;
       if(weight > 1) weight = 1;
       if(weight < -1) weight = -1;
     }
